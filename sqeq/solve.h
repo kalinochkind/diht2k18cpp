@@ -6,93 +6,70 @@
 #include <algorithm>
 #include <cassert>
 
-constexpr double EPS = 0.00000001;
-
 
 /**
- * A set of roots of the equation.
- * Either contains a finite number of roots or indicates that any number is a solution.
+ * If the difference between two doubles is less than this constant, they are considered equal.
  */
-template <class T>
-class EquationRootSet {
- public:
-  EquationRootSet(const std::initializer_list<T>& roots)
-      : roots_(roots) {
-  }
+constexpr double EPS = 0.00000001;
+/**
+ * The constant indicating that any number is a root.
+ */
+constexpr int EQ_INFINITE_ROOTS = -1;
 
-  /**
-   * Constructs an EquationRootSet instance indicating that every number is a root of an equation.
-   */
-  static EquationRootSet all_roots() {
-    EquationRootSet set{};
-    set.any_root_ = true;
-    return set;
-  }
-
-  /**
-   * @return A vector of roots (empty if any number is a root)
-   */
-  std::vector<T> roots() const {
-    return roots_;
-  }
-
-  /**
-   * @return true, if any number is a root, false otherwise
-   */
-  bool is_any_root() const {
-    return any_root_;
-  }
-
- private:
-
-  std::vector<T> roots_;
-  bool any_root_;
-};
 
 /**
  * Solves linear equation ax + b = 0
- * @tparam T type of a, b and return value
- * @return EquationRootSet instance representing roots of the equation
+ * @param a first coefficient
+ * @param b second coefficient
+ * @param roots iterator where the roots will be stored
+ * @return number of roots or EQ_INFINITE_ROOTS
  */
-template <class T>
-const EquationRootSet<T> solve_linear_equation(const T a, const T b) {
+template <class OutputIterator>
+int solve_linear_equation(const double a, const double b, OutputIterator roots) {
   assert(std::isfinite(a));
   assert(std::isfinite(b));
   if (a == 0) {
     if (b == 0) {
-      return EquationRootSet<T>::all_roots();
+      return EQ_INFINITE_ROOTS;
     } else {
-      return {};
+      return 0;
     }
   }
-  return {-b / a};
+  roots++ = -b / a;
+  return 1;
 }
 
 /**
  * Solves quadratic equation ax^2 + bx + c = 0
- * @tparam T type of a, b, c and return value
- * @return EquationRootSet instance representing roots of the equation
+ * @param a first coefficient
+ * @param b second coefficient
+ * @param c third coefficient
+ * @param roots iterator where the roots will be stored
+ * @return number of roots or EQ_INFINITE_ROOTS
  */
-template <class T>
-const EquationRootSet<T> solve_quadratic_equation(const T a, const T b, const T c) {
+template <class OutputIterator>
+int solve_quadratic_equation(const double a, const double b, const double c, OutputIterator roots) {
   assert(std::isfinite(a));
   assert(std::isfinite(b));
   assert(std::isfinite(c));
   if (a == 0) {
-    return solve_linear_equation(b, c);
+    return solve_linear_equation(b, c, roots);
   }
-  T discriminant = b * b - 4 * a * c;
+  double discriminant = b * b - 4 * a * c;
   if (discriminant < -EPS) {
-    return {};
+    return 0;
   }
-  T middle = -b / (2 * a);
+  double middle = -b / (2 * a);
   if (discriminant < EPS) {
-    return {middle};
+    roots++ = middle;
+    return 1;
   }
-  T diff = sqrt(discriminant) / (2 * a);
+  double diff = sqrt(discriminant) / (2 * a);
   if (a < 0) {
     diff = -diff;
   }
   assert(diff > 0);
-  return {middle - diff, middle + diff};
+  roots++ = middle - diff;
+  roots++ = middle + diff;
+  return 2;
 }
