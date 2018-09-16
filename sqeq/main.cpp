@@ -1,10 +1,14 @@
 #include <iostream>
 #include "solve.h"
 
+
 int main() {
   std::cout << "Enter equation coefficients: ";
   double a, b, c;
-  std::cin >> a >> b >> c;
+  if (!(std::cin >> a >> b >> c)) {
+    std::cout << "Three real numbers, please" << std::endl;
+    return 1;
+  }
   std::vector<double> roots;
   int solution = solve_quadratic_equation(a, b, c, std::back_inserter(roots));
   switch (solution) {
