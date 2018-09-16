@@ -35,7 +35,7 @@ int solve_linear_equation(const double a, const double b, OutputIterator roots) 
       return 0;
     }
   }
-  roots++ = -b / a;
+  *(roots++) = -b / a;
   return 1;
 }
 
@@ -61,7 +61,7 @@ int solve_quadratic_equation(const double a, const double b, const double c, Out
   }
   double middle = -b / (2 * a);
   if (discriminant < EPS) {
-    roots++ = middle;
+    *(roots++) = middle;
     return 1;
   }
   double diff = sqrt(discriminant) / (2 * a);
@@ -69,7 +69,7 @@ int solve_quadratic_equation(const double a, const double b, const double c, Out
     diff = -diff;
   }
   assert(diff > 0);
-  roots++ = middle - diff;
-  roots++ = middle + diff;
+  *(roots++) = middle - diff;
+  *(roots++) = middle + diff;
   return 2;
 }
