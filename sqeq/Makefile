@@ -8,3 +8,6 @@ test:
 
 clean:
 	rm main test
+
+
+.PHONY: main test

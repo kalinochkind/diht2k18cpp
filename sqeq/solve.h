@@ -18,6 +18,16 @@ constexpr int EQ_INFINITE_ROOTS = -1;
 
 
 /**
+ * Checks whether a number is close to zero.
+ * @param number
+ * @return true if the number is close to zero, false otherwise
+ */
+constexpr bool is_zero(const double number) {
+    return number < EPS && number > -EPS;
+}
+
+
+/**
  * Solves linear equation ax + b = 0
  * @param a first coefficient
  * @param b second coefficient
@@ -28,8 +38,8 @@ template <class OutputIterator>
 int solve_linear_equation(const double a, const double b, OutputIterator roots) {
   assert(std::isfinite(a));
   assert(std::isfinite(b));
-  if (a == 0) {
-    if (b == 0) {
+  if (is_zero(a)) {
+    if (is_zero(b)) {
       return EQ_INFINITE_ROOTS;
     } else {
       return 0;
@@ -52,8 +62,7 @@ int solve_quadratic_equation(const double a, const double b, const double c, Out
   assert(std::isfinite(a));
   assert(std::isfinite(b));
   assert(std::isfinite(c));
-  /* common, where is an epsilon? */
-  if (a == 0) {
+  if (is_zero(a)) {
     return solve_linear_equation(b, c, roots);
   }
   double discriminant = b * b - 4 * a * c;
