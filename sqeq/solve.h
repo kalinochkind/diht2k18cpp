@@ -52,6 +52,7 @@ int solve_quadratic_equation(const double a, const double b, const double c, Out
   assert(std::isfinite(a));
   assert(std::isfinite(b));
   assert(std::isfinite(c));
+  /* common, where is an epsilon? */
   if (a == 0) {
     return solve_linear_equation(b, c, roots);
   }
